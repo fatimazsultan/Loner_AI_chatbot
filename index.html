@@ -59,12 +59,12 @@
     <div class="chat-box">
         <textarea id="userMessage" placeholder="Say something..." required></textarea>
         <button onclick="sendMessage()">Talk</button>
-
         <div id="responseBox" class="response-box" style="display:none;"></div>
     </div>
 
     <script>
-        const API_URL = "https://subtubiform-overblindly-karina.ngrok-free.ngrok.io/chat"; // your ngrok URL
+        // The serverless function on Vercel should be at api/chat.js or api/chat.py
+        const API_URL = "/api/chat";
 
         async function sendMessage() {
             const userMessage = document.getElementById("userMessage").value.trim();
@@ -83,9 +83,13 @@
                     body: JSON.stringify({ message: userMessage })
                 });
 
+                if (!res.ok) throw new Error("Server error");
+
                 const data = await res.json();
+
+                // Make sure your serverless function returns { reply: "..." }
                 responseBox.innerHTML = "<strong>You:</strong> " + userMessage +
-                                        "<br><br><strong>LonerAI:</strong> " + data.response;
+                                        "<br><br><strong>LonerAI:</strong> " + data.reply;
             } catch (err) {
                 responseBox.innerHTML = "<strong>Error:</strong> Could not reach the server.";
                 console.error(err);

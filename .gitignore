@@ -2,3 +2,5 @@ vicuna-7b-v1.5.Q4_K_M.gguf
 __pycache__/
 *.pyc
 .env
+.vercel
+.env*.local
