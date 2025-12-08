@@ -6,7 +6,7 @@
         body {
             background: #0d0d0d;
             color: #e0e0e0;
-            font-family: Arial;
+            font-family: Arial, sans-serif;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -37,6 +37,7 @@
             border: none;
             border-radius: 6px;
             width: 100%;
+            cursor: pointer;
         }
         .response-box {
             margin-top: 20px;
@@ -51,17 +52,46 @@
     <h2>LonerAI</h2>
 
     <div class="chat-box">
-        <form method="POST">
-            <textarea name="message" placeholder="Say something..." required></textarea>
+        <form id="chat-form">
+            <textarea id="user-input" placeholder="Say something..." required></textarea>
             <button type="submit">Talk</button>
         </form>
-
-        {% if bot_reply %}
-        <div class="response-box">
-            <strong>You:</strong> {{ user_message }}<br><br>
-            <strong>LonerAI:</strong> {{ bot_reply }}
-        </div>
-        {% endif %}
     </div>
+
+    <script>
+        const API_URL = " https://subtubiform-overblindly-karina.ngrok-free."; // <-- Replace with your ngrok URL
+
+        const form = document.getElementById("chat-form");
+        const textarea = document.getElementById("user-input");
+        const chatBox = document.querySelector(".chat-box");
+
+        form.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const message = textarea.value.trim();
+            if (!message) return;
+
+            // Create message container
+            const userDiv = document.createElement("div");
+            userDiv.className = "response-box";
+            userDiv.innerHTML = `<strong>You:</strong> ${message}<br><br><strong>LonerAI:</strong> ...loading...`;
+            chatBox.appendChild(userDiv);
+
+            // Clear textarea
+            textarea.value = "";
+
+            try {
+                const res = await fetch(API_URL, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ message })
+                });
+                const data = await res.json();
+                userDiv.innerHTML = `<strong>You:</strong> ${message}<br><br><strong>LonerAI:</strong> ${data.response}`;
+            } catch (err) {
+                userDiv.innerHTML = `<strong>You:</strong> ${message}<br><br><strong>LonerAI:</strong> Error connecting to API`;
+                console.error(err);
+            }
+        });
+    </script>
 </body>
 </html>
