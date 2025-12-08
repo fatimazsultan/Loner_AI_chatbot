@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LonerAI Chatbot</title>
+    <style>
+        body {
+            background: #0d0d0d;
+            color: #e0e0e0;
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-top: 60px;
+        }
+        .chat-box {
+            width: 50%;
+            background: #1a1a1a;
+            padding: 20px;
+            border-radius: 10px;
+        }
+        textarea {
+            width: 100%;
+            height: 80px;
+            background: #111;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 10px;
+            outline: none;
+            resize: none;
+        }
+        button {
+            margin-top: 10px;
+            padding: 10px;
+            background: #333;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            width: 100%;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #555;
+        }
+        .response-box {
+            margin-top: 20px;
+            white-space: pre-wrap;
+            padding: 15px;
+            background: #111;
+            border-radius: 6px;
+        }
+    </style>
+</head>
+<body>
+    <h2>LonerAI</h2>
+
+    <div class="chat-box">
+        <textarea id="userMessage" placeholder="Say something..." required></textarea>
+        <button onclick="sendMessage()">Talk</button>
+
+        <div id="responseBox" class="response-box" style="display:none;"></div>
+    </div>
+
+    <script>
+        const API_URL = "https://subtubiform-overblindly-karina.ngrok-free.ngrok.io/chat"; // your ngrok URL
+
+        async function sendMessage() {
+            const userMessage = document.getElementById("userMessage").value.trim();
+            if (!userMessage) return;
+
+            const responseBox = document.getElementById("responseBox");
+            responseBox.style.display = "block";
+            responseBox.innerHTML = "<strong>You:</strong> " + userMessage + "<br><br><em>Loading...</em>";
+
+            try {
+                const res = await fetch(API_URL, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ message: userMessage })
+                });
+
+                const data = await res.json();
+                responseBox.innerHTML = "<strong>You:</strong> " + userMessage +
+                                        "<br><br><strong>LonerAI:</strong> " + data.response;
+            } catch (err) {
+                responseBox.innerHTML = "<strong>Error:</strong> Could not reach the server.";
+                console.error(err);
+            }
+
+            document.getElementById("userMessage").value = "";
+        }
+    </script>
+</body>
+</html>
