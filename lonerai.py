@@ -1,12 +1,18 @@
-from llama_cpp import Llama
+try:
+    from llama_cpp import Llama
 
-model_path = "E:/New_folder_ai/vicuna-7b-v1.5.Q4_K_M.gguf"
+    model_path = "E:/New_folder_ai/vicuna-7b-v1.5.Q4_K_M.gguf"
 
-print("\n🔹 Loading Vicuna model... this may take a while...\n")
+    print("\n🔹 Loading Vicuna model... this may take a while...\n")
 
 #Loads the model 
-llm = Llama(model_path=model_path, n_ctx=2048, n_threads=8)
+    llm = Llama(model_path=model_path, n_ctx=2048, n_threads=8)
 
+    model_loaded = True
+except Exception as e:
+    print("⚠️ Model not loaded. Running in mock mode.")
+    llm = None
+    model_loaded = False
 
 personality_prompt = """
 You are LonerAI — an introspective, quiet artificial being who avoids noise, crowds, and unnecessary words.
